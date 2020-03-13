@@ -22,18 +22,18 @@
                             <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
                         </el-upload>
                     </el-form-item>
-                    <el-form-item label="任务类别：" required>
-                        <el-select v-model="value" placeholder="请选择" style="width:380px">
+                    <el-form-item label="行业类别：" required>
+                        <el-select v-model="form.industryId" placeholder="请选择" style="width:380px">
                             <el-option
                             v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="是否议价：" required>
-                        <el-select v-model="bargainId" placeholder="请选择" style="width:380px">
+                        <el-select v-model="form.isBargain" placeholder="请选择" style="width:380px">
                             <el-option
                             v-for="item in bargaining"
                             :key="item.id"
@@ -43,37 +43,59 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="任务类型：" required>
-                        <el-radio-group v-model="form.resource">
-                            <el-radio label="1">佣金任务 <i>（通常情况为个人发布，任务周期短，按完成数量或要求发放酬劳）</i></el-radio>
-                            <el-radio label="2">项目任务<i>（有一定的项目周期，一般为1周～1个月不等）</i></el-radio>
-                            <el-radio label="3">包月任务<i>（为你分配一对一的技能专项服务方，包月制，薪酬月结）</i></el-radio>
+                        <el-radio-group v-model="form.typeName">
+                            <el-radio label="佣金任务">佣金任务 <i>（通常情况为个人发布，任务周期短，按完成数量或要求发放酬劳）</i></el-radio>
+                            <el-radio label="项目任务">项目任务<i>（有一定的项目周期，一般为1周～1个月不等）</i></el-radio>
+                            <el-radio label="包月任务">包月任务<i>（为你分配一对一的技能专项服务方，包月制，薪酬月结）</i></el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="周期：" required>
-                        <el-input v-model="form.name" placeholder="3个月"></el-input>
+                        <el-input v-model="form.period" placeholder="3个月"></el-input>
                     </el-form-item>
                     <el-form-item label="薪资：" required>
-                        <el-input v-model="form.name" style="width:176px"></el-input>  至  <el-input v-model="form.name" style="width:176px"></el-input>
+                        <el-input type="number" v-model="form.startPrice" style="width:176px"></el-input>  至  <el-input type="number" v-model="form.endPrice" style="width:176px"></el-input>
                     </el-form-item>
                     <el-form-item label="技能要求：">
-                        <el-input v-model="form.name" placeholder="技能要求"></el-input>
+                        <el-input v-model="form.skillsRequired" placeholder="技能要求"></el-input>
                     </el-form-item>
-                    <el-form-item label="驻场要求：">
+                    <!-- <el-form-item label="驻场要求：">
                         <el-input v-model="form.name"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="竞标周期：" required class="bidding">
-                        <el-input v-model="form.name" placeholder="例如7天"></el-input>
+                        <el-date-picker
+                            v-model="form.endTime"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                         <p>超过竞标周期，则自动取消该任务</p>
                     </el-form-item>
                     <el-form-item label="服务方要求：" required>
                         <el-radio-group v-model="form.resource">
-                            <el-radio label="4">不限</el-radio>
-                            <el-radio label="5">个人</el-radio>
-                            <el-radio label="6">团队</el-radio>
+                            <el-radio label="1">不限</el-radio>
+                            <el-radio label="2">个人</el-radio>
+                            <el-radio label="3">团队</el-radio>
                         </el-radio-group>
                     </el-form-item>
+                    <!-- <el-form-item label="指定方手机号：" required>
+                        <el-input type="text" v-model="form.des"></el-input>
+                        <el-button type="text" @click="userName" class="cancelRelease">搜索</el-button>
+                    </el-form-item> -->
                     <el-form-item label="任务描述：">
-                        <el-input type="textarea" v-model="form.desc" style="width:380px;"></el-input>
+                        <el-input type="textarea" v-model="form.des" style="width:380px;"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-upload
+                            class="upload-demo"
+                            :action="uploadAction"
+                            :headers="uploadheaders"
+                            :on-success="handlePreview"
+                            :on-remove="handleRemove"
+                            :before-upload="handleUpload"
+                            multiple
+                            >
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传不超过500kb文件</div>
+                        </el-upload>
                     </el-form-item>
                     <el-form-item class="release">
                         <el-checkbox-group v-model="checkList">
@@ -81,7 +103,7 @@
                         </el-checkbox-group>
                     </el-form-item>
                     <el-form-item class="release">
-                        <el-button type="text" @click="onSubmit" class="stureRelease">我要发布</el-button>
+                        <el-button type="text" @click="onSubmitAdd" class="stureRelease">我要发布</el-button>
                         <el-button type="text" @click="onSubmit" class="cancelRelease">取消发布</el-button>
                     </el-form-item>
                 </el-form>
@@ -94,35 +116,30 @@
 <script>
 import headerSelect from "@/components/headerSelect";
 import fonter from "@/components/fonter";
+import { taskDetails, zgtasktype } from "@/api/task/taskList"
+import { login } from "@/api/login"
 export default {
   data(){
       return{
            form: {
                 name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
+                resource:"",
+                des: '',
+                industryId:"",
+                isBargain:"",
+                typeName:"",//任务类型
+                period:"",//time
+                startPrice: 0,
+                endPrice: 0,
+                skillsRequired:"",//技能要求
+                endTime: "",
+                memberId:"",
+                zgTaskAttachDtos:[],//附件
+                ZGTaskBidDto:{
+                    memberId:""
+                }
             },
-            options: [{
-                value: '选项1',
-                label: '人工智能'
-                }, {
-                value: '选项2',
-                label: '大数据'
-                }, {
-                value: '选项3',
-                label: '物联网'
-                }, {
-                value: '选项4',
-                label: '云计算'
-                }, {
-                value: '选项5',
-                label: '游戏开发'
-                }],
+            options: [],
             bargaining:[
                 {
                     id: '0',
@@ -136,6 +153,11 @@ export default {
             bargainId:"",
             value: '',
             checkList:[],
+            uploadheaders: { "X-Access-Token": sessionStorage.getItem("token") },
+            uploadAction: this.baseURL + `/taskcenter/upload/upload`,
+            fileList:[],
+            restaurants: [],
+            state: ''
       }
   },
   components:{
@@ -143,12 +165,66 @@ export default {
      fonter
    },
   created(){
-
+      this.zgtindtype();
+      this.username = sessionStorage.getItem("username");
+      this.form.memberId = sessionStorage.getItem("memberId");
+    //   this.userName()
   },
   methods:{
       onSubmit() {
         console.log('submit!');
-      }
+      },
+    //   添加任务
+      onSubmitAdd(){
+          if(this.checkList.length==0){
+                return this.$message.warning("请选择协议")
+            };
+          let url = `${taskDetails.taskAdd}`;
+          this.axios.post(url,this.form).then(res=>{
+            //   console.log(res.data)
+          })
+      },
+    // 所有行业类型
+        zgtindtype(){
+            let url = `${zgtasktype.tindtype}`;
+            this.axios.get(url).then(res=>{
+                if(res.data.code==200){
+                    this.options = res.data.result
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(res, file,fileList) {
+        if(res.code == 200){
+            let array = [];
+            let item = {
+              content: file.size,
+              path: file.name,
+              filePath: res.result.filePath,
+              cnName: res.result.cnName,
+              enName: res.result.enName,
+              suffix: res.result.suffix
+            };
+            array.push(item);
+            this.form.zgTaskAttachDtos = array;
+            console.log(this.form.zgTaskAttachDtos)
+        }else{
+          this.$message.error(res.message);
+        }
+      },
+      handleUpload(file) {
+       console.log(file,5555)
+      },
+      userName(){
+          let url = `${login.userName}`;
+          this.axios.get(url,{params:this.state}).then(res=>{
+              console.log(res)
+          })
+      },
   }
 }
 </script>
@@ -247,5 +323,13 @@ export default {
     }
     .bidding p{
         font-size: 10px;
+    }
+    .cancel{
+        color:#339999;
+        border: none;
+    }
+    .el-button--primary{
+        background-color: #339999;
+        border: none;
     }
 </style>

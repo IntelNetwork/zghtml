@@ -8,7 +8,7 @@ export const constantRouterMap = [
   { path: '/registered',name: 'registered', component: () => import('@/page/registered'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true }, 
   {
-      path: '/index',
+      path: '/',
       name: 'index',
       component: () => import('@/page/index'),
       meta: { title: '首页', icon: 'el-icon-caret-right' }
@@ -157,7 +157,7 @@ export const constantRouterMap = [
     },
     // 任务大厅
     {
-      path: '/',
+      path: '/taskHall',
       name: 'taskHall',
       component: () => import('@/page/task/taskHall'),
       meta: { title: '任务大厅', icon: 'el-icon-caret-right' }
@@ -178,7 +178,19 @@ export const constantRouterMap = [
       path: '/bidder',
       name: 'bidder',
       component: () => import('@/page/task/bidder'),
-      meta: { title: '任务详情', icon: 'el-icon-caret-right' }
+      meta: { title: '竞标人信息', icon: 'el-icon-caret-right' }
+    },
+    {
+      path: '/ongoing',
+      name: 'ongoing',
+      component: () => import('@/page/task/ongoing'),
+      meta: { title: '已接任务列表', icon: 'el-icon-caret-right' }
+    },
+    {
+      path: '/published',
+      name: 'published',
+      component: () => import('@/page/task/published'),
+      meta: { title: '已发布任务', icon: 'el-icon-caret-right' }
     },
     // 我要入驻
     {

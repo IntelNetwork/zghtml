@@ -21,5 +21,5 @@ export const regist = {
 export const login = {
   login: obj + '/api/v1.0/user/login',//登录接口
   loginVeri: obj + '/api/v1.0/user/login-veri-code', //发送验证码接口
-   
+  userName: obj + '/user/user-by-name'
 };
