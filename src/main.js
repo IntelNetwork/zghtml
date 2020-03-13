@@ -35,7 +35,6 @@ Vue.prototype.baseURL = "http://api.interstrangers.com";
 
 Vue.prototype.axios = axios;
 
-
 Vue.config.productionTip = false
 
 new Vue({
