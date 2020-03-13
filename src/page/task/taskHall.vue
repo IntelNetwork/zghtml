@@ -364,7 +364,7 @@ export default {
             if(this.checkList.length==0){
                 return this.$message.warning("请选择协议")
             };
-            console.log(this.checkList)
+            // console.log(this.checkList)
             this.$router.push({
                 name:"taskRelease"
             });

@@ -6,6 +6,7 @@ export const task = {
 export const taskDetails = {
     details: obj + '/api/v1.0/taskdetail/detail', //任务详情
     bidding: obj + '/api/v1.0/bid/bidding', //立即竞标
+    taskAdd: obj + '/api/v1.0/task/add', //添加任务
 };
 // 任务类型管理
 export const zgtasktype = {

@@ -28,8 +28,11 @@ Object.keys(filters).forEach(key => {
 })
 /* 注入vue全局中，这样我们可以在组件内或者JS内通过使用this.$qs来使用qs库*/
 Vue.use(ElementUI)
-axios.defaults.baseURL = "http://122.51.238.114:8863";
-Vue.prototype.baseURL = "http://122.51.238.114:8863";
+// axios.defaults.baseURL = "http://122.51.238.114:8863";
+// Vue.prototype.baseURL = "http://122.51.238.114:8863";
+axios.defaults.baseURL = "http://api.interstrangers.com";
+Vue.prototype.baseURL = "http://api.interstrangers.com";
+
 Vue.prototype.axios = axios;
 
 
