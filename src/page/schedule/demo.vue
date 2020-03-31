@@ -7,12 +7,20 @@
       :header="{
         left: 'prev,next',
         center: 'title',
+<<<<<<< HEAD
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
+=======
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
       }"
       :buttonText="buttonText"
       :plugins="calendarPlugins"
       :weekends="calendarWeekends"
+<<<<<<< HEAD
       :events="calendarEvents"
+=======
+      :events="getCalendarEvents"
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
       :eventLimit="true"
       eventLimitText="更多"
       @dateClick="handleDateClick"
@@ -20,7 +28,10 @@
       
       />
  </div>
+<<<<<<< HEAD
  <!-- :events="getCalendarEvents" -->
+=======
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
  <!-- <div>
      <FullCalendar :buttonText="buttonText" @dateClick="handleDateClick" :plugins="calendarPlugins" locale="zh-cn"  />
  </div> -->
@@ -39,7 +50,11 @@ export default {
   data () {
     return {
       buttonText: {
+<<<<<<< HEAD
         // today: '今天',
+=======
+        today: '今天',
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
         month: '月',
         week: '周',
         day: '天',
@@ -63,11 +78,19 @@ export default {
         }
       ],
       times:"",
+<<<<<<< HEAD
       // form:{
       //     title: '测试',
       //     start: '',
       //     color: '#3EC7A7'
       // },
+=======
+      form:{
+          title: '测试',
+          start: '',
+          color: '#3EC7A7'
+      },
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
       calendarApi: null
     }
   },
@@ -97,6 +120,7 @@ export default {
     },
     handleDateClick (arg) {//添加时间
         // this.times = arg.data
+<<<<<<< HEAD
         console.log(arg)
         // this.calendarEvents.push({ // add new event data
         //   title: '11',
@@ -116,6 +140,25 @@ export default {
         })
       }
       // this.calendarApi.refetchEvents()
+=======
+        console.log(arg.date)
+        // this.calendarEvents.push({ // add new event data
+        //   title: 'New Event',
+        //   start: arg.date,
+        // //   allDay: arg.allDay
+        // })
+
+
+
+    //   if (confirm('您要将事件添加到 ' + arg.dateStr + ' ?')) {
+    //     this.calendarEvents.push({ // add new event data
+    //       title: 'New Event',
+    //       start: arg.date,
+    //       allDay: arg.allDay
+    //     })
+    //   }
+    //   this.calendarApi.refetchEvents()
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
     },
     handleEventClick (info) {
       alert('Event: ' + info.event.title);
@@ -128,6 +171,7 @@ export default {
   }
 }
 </script>
+<<<<<<< HEAD
 <style scoped>
 
 .fc-content .fc-time-grid-event >>>.fc-time, .fc-content .fc-time-grid-event >>>.fc-title{
@@ -139,4 +183,10 @@ export default {
 /* .fc-unthemed >>> th, .fc-unthemed >>> td, .fc-unthemed >>> thead, .fc-unthemed >>> tbody, .fc-unthemed >>> .fc-divider, .fc-unthemed >>> .fc-row, .fc-unthemed >>> .fc-content, .fc-unthemed >>> .fc-popover, .fc-unthemed >>> .fc-list-view, .fc-unthemed >>> .fc-list-heading td{
   background: #ffffff !important;
 } */
+=======
+<style rel="stylesheet/scss" lang="scss">
+  //用什么插件必须引入相应的样式表，否则不能正常显示
+//   @import '~@fullcalendar/core/main.css';
+//   @import '~@fullcalendar/daygrid/main.css';
+>>>>>>> 99ec28254e3607c99e7ca9b5744bb72139bcf737
 </style>
