@@ -25,12 +25,12 @@ export const constantRouterMap = [
     component: () => import('@/page/rechargeWithdrawal/withdrawal'),
     meta: { title: '提现页面', icon: 'el-icon-caret-right' }
   },
-  {
-    path: '/workPlan',
-    name: 'workPlan',
-    component: () => import('@/page/work/workPlan'),
-    meta: { title: '工作计划', icon: 'el-icon-caret-right' }
-  },
+  // {
+  //   path: '/workPlan',
+  //   name: 'workPlan',
+  //   component: () => import('@/page/work/workPlan'),
+  //   meta: { title: '工作计划', icon: 'el-icon-caret-right' }
+  // },
   {
     path: '/applyApproval',
     name: 'applyApproval',
@@ -80,12 +80,12 @@ export const constantRouterMap = [
       component: () => import('@/page/personal/data'),
       // meta: { title: '资料与账号', icon: 'el-icon-caret-right' }
     },
-    {
-      path: '/potentialContacts',
-      name: 'potentialContacts',
-      component: () => import('@/page/personal/potentialContacts'),
-      // meta: { title: '潜在人脉', icon: 'el-icon-caret-right' }
-    },
+    // {
+    //   path: '/potentialContacts',
+    //   name: 'potentialContacts',
+    //   component: () => import('@/page/personal/potentialContacts'),
+    //   // meta: { title: '潜在人脉', icon: 'el-icon-caret-right' }
+    // },
     {
       path: '/attention',
       name: 'attention',
@@ -117,18 +117,18 @@ export const constantRouterMap = [
       component: () => import('@/page/personal/news'),
       // meta: { title: '我的消息', icon: 'el-icon-caret-right' }
     },
-    {
-      path: '/circle',
-      name: 'circle',
-      component: () => import('@/page/circle/circle'),
-      // meta: { title: '我的圈子', icon: 'el-icon-caret-right' }
-    },
-    {
-      path: '/create',
-      name: 'create',
-      component: () => import('@/page/circle/create'),
-      // meta: { title: '创建', icon: 'el-icon-caret-right' }
-    },
+    // {
+    //   path: '/circle',
+    //   name: 'circle',
+    //   component: () => import('@/page/circle/circle'),
+    //   // meta: { title: '我的圈子', icon: 'el-icon-caret-right' }
+    // },
+    // {
+    //   path: '/create',
+    //   name: 'create',
+    //   component: () => import('@/page/circle/create'),
+    //   // meta: { title: '创建', icon: 'el-icon-caret-right' }
+    // },
     {
       path: '/nojoin',
       name: 'nojoin',
@@ -175,7 +175,13 @@ export const constantRouterMap = [
       meta: { title: '任务详情', icon: 'el-icon-caret-right' }
     },
     {
-      path: '/bidder',
+      path: '/releaseDetails:id',
+      name: 'releaseDetails',
+      component: () => import('@/page/task/releaseDetails'),
+      meta: { title: '发布任务详情', icon: 'el-icon-caret-right' }
+    },
+    {
+      path: '/bidder:id:taskId',
       name: 'bidder',
       component: () => import('@/page/task/bidder'),
       meta: { title: '竞标人信息', icon: 'el-icon-caret-right' }
@@ -191,6 +197,24 @@ export const constantRouterMap = [
       name: 'published',
       component: () => import('@/page/task/published'),
       meta: { title: '已发布任务', icon: 'el-icon-caret-right' }
+    },
+    {
+      path: '/taskProcess',
+      name: 'taskProcess',
+      component: () => import('@/page/task/taskProcess'),
+      meta: { title: '任务进程', icon: 'el-icon-caret-right' }
+    },
+    // {
+    //   path: '/taskProcess',
+    //   name: 'taskProcess',
+    //   component: () => import('@/page/task/taskProcess'),
+    //   meta: { title: '任务进程', icon: 'el-icon-caret-right' }
+    // },
+    {
+      path: '/editor',
+      name: 'editor',
+      component: () => import('@/components/editor/editor1'),
+      meta: { title: '百度编辑器', icon: 'el-icon-caret-right' }
     },
     // 我要入驻
     {
@@ -278,6 +302,42 @@ export const constantRouterMap = [
         component: () => import('@/page/error/feedback'),
         meta: { title: '数据中心', icon: 'el-icon-caret-right' }
     },
+
+    // 会员部分
+    {
+        path: '/personalCenter',
+        name: 'personalCenter',
+        component: () => import('@/page/members/personalCenter'),
+        meta: { title: '个人中心', icon: 'el-icon-caret-right' }
+    },
+    {
+        path: '/teamApply',
+        name: 'teamApply',
+        component: () => import('@/page/team/teamApply'),
+        meta: { title: '创建团队选择', icon: 'el-icon-caret-right' }
+    },
+
+    //日程管理部分
+    {
+        path: '/personalAgenda',
+        name: 'personalAgenda',
+        component: () => import('@/page/schedule/personalAgenda'),
+        meta: { title: '个人日程', icon: 'el-icon-caret-right' }
+    },
+    // 写工作计划
+    {
+        path: '/workPlan',
+        name: 'workPlan',
+        component: () => import('@/page/schedule/workPlan'),
+        meta: { title: '写工作计划', icon: 'el-icon-caret-right' }
+    },
+    {
+        path: '/demo',
+        name: 'demo',
+        component: () => import('@/page/schedule/demo'),
+        meta: { title: '写工作计划', icon: 'el-icon-caret-right' }
+    },
+    
     { path: '*', redirect: '/404', hidden: true },
 
 ]

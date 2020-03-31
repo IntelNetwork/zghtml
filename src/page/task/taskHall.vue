@@ -2,6 +2,9 @@
   <div class="taskHall">
       <headerSelect />
       <div class="taskHallContent">
+          <div class="taskBanner">
+              <img src="../../assets/taskBanner.png" alt="">
+          </div>
           <div class="contentTop">
               <div class="contentType">
                   <span>行业类型：</span>
@@ -13,42 +16,54 @@
               <div class="contentType">
                   <span>任务类型：</span>
                   <ul>
-                      <li class="active" @click="active($event)">不限</li>
-                      <li v-for="(item,index) in type" :key="index" @click="active($event)" class="">{{item.name}}</li>
+                      <li class="active" @click="typelist($event)">不限</li>
+                      <li v-for="(item,index) in type" :key="index" @click="typelist($event)" class="">{{item.name}}</li>
                   </ul>
               </div>
               <div class="contentType">
                   <span>金额范围：</span>
                   <ul>
-                      <li class="active" @click="active($event)">不限</li>
-                      <li v-for="(item,index) in type" :key="index" @click="active($event)" class="">{{item.name}}</li>
+                      <li class="active" @click="amountList($event)">不限</li>
+                      <li v-for="(item,index) in amount" :key="index" @click="amountList($event)" class="">{{item.startPrice}}-{{item.endPrice}}</li>
                   </ul>
               </div>
-              <div class="contentSorting">
-                  <span>排序：</span>
-                  <ul>
-                      <li class="default" @click="active2($event)">默认</li>
-                      <li @click="active2($event)">项目资金</li>
-                      <li @click="active2($event)">项目周期</li>
-                  </ul>
-              </div>
+              
           </div>
           <div class="content">
               <div class="contentLeft">
-                  <div class="taskContent" v-for="(item ,index) in taskConten" :key="index" @click="taskHall($event)">
+                    <div class="contentSorting">
+                        <span>排序：</span>
+                        <ul>
+                            <li class="default" @click="active2($event)">默认</li>
+                            <li @click="active2($event,3)">发布时间  
+                                <span class="caret"><i class="el-icon-caret-top" @click="ascending('releaseTime')"></i> <i class="el-icon-caret-bottom" @click="drop('releaseTime')"></i></span>
+                            </li>
+                            <li @click="active2($event,4)">竞标人数
+                                <span class="caret"><i class="el-icon-caret-top" @click="ascending('count')"></i> <i class="el-icon-caret-bottom" @click="drop('count')"></i></span>
+                            </li>
+                            <li @click="active2($event,1)">项目资金  
+                                <span class="caret"><i class="el-icon-caret-top" @click="ascending('startPrice')"></i> <i class="el-icon-caret-bottom" @click="drop('startPrice')"></i></span>
+                            </li>
+                            <li @click="active2($event,2)">项目周期
+                                <span class="caret"><i class="el-icon-caret-top" @click="ascending('period')"></i> <i class="el-icon-caret-bottom" @click="drop('period')"></i></span>
+                            </li>
+                        </ul>
+                   </div>
+                  <div class="taskContent" v-for="(item ,index) in taskConten" :key="index" @click="taskHall($event,item.memberId)" >
                       <div style="display:none">{{item.id}}</div>
+                      <!-- <div id="memberId">{{item.memberId}}</div> -->
                       <div class="Titleimg">
                            <div>
-                              <img :src="item.img" alt="">
+                              <img :src="'http://fds.interstrangers.com/'+item.icon" alt="">
                             </div>
                             <div class="leftTitle">
                                 <div>
                                     <h3>{{item.name}}</h3>
                                 </div>
                                 <div class="leftType">
-                                    <span>{{item.industry}}</span>
-                                    <span>{{item.typeName}}</span>
-                                    <span>{{item.period}}个月</span>
+                                    <span v-if="item.industry!=null">{{item.industry}}</span>
+                                    <span v-if="item.typeName!=null">{{item.typeName}}</span>
+                                    <span v-if="item.period!=null">{{item.period}}个月</span>
                                 </div>
                                 <div>
                                     <p>技能要求：{{item.skillsRequired}}</p>
@@ -67,10 +82,10 @@
                           </span>
                           <span>
                               <span class="priceFont">
-                                  <svg class="icon priceIcon" aria-hidden="true">
+                                  <!-- <svg class="icon priceIcon" aria-hidden="true">
                                     <use xlink:href="#iconzhuanxiangbiao"></use>
-                                  </svg>
-                                    <p>开通会员，优先竞标</p>
+                                  </svg> -->
+                                    <p><img src="../../assets/navOut5.png" alt=""> 开通会员，优先竞标</p>
                                 </span>
                           </span>
                           <span>
@@ -80,7 +95,7 @@
                   </div>
               </div>
               <div class="contentRight">
-                  <div class="demand" @click="centerDialogVisible=true">
+                  <div class="demand" @click="visible">
                       <span class="iconfont">
                          &#xe634;
                       </span>
@@ -89,12 +104,21 @@
                           <p>发布项目，任务等</p>
                       </span>
                   </div>
+                  <!-- <div class="demand deman" @click="published">
+                      <span class="iconfont">
+                         &#xe6c7;
+                      </span>
+                      <span class="demandContent">
+                          <h4>我的任务</h4>
+                          <p>查看发布/接收的任务</p>
+                      </span>
+                  </div> -->
                   <div class="clinch">
                       <div class="clinchTitle">
                           <p>最新成交</p>
                           <span></span>
                       </div>
-                      <div class="clinchContent" v-for="(item,index) in clinch" v-if="index < 3" :key="index">
+                      <div class="clinchContent" v-for="(item,index) in clinch" v-if="index < 3" :key="index" >
                           <div class="clinchName">
                               <span class="name">{{item.memberName}}</span>
                               <span>中标</span>
@@ -219,7 +243,7 @@
                </el-pagination>
           </div>
           <div>
-        <el-dialog title="竞标确认" :visible.sync="centerDialogVisible" width="46%" center >
+        <el-dialog title="发布任务" :visible.sync="centerDialogVisible" width="46%" center >
           <div class="dialog">
             <p class="dialogTitle">您是否确认要竞标该项任务？请您确认竞标任务内容</p>
             <div class="agreement">
@@ -268,7 +292,7 @@ export default {
         return{
             type:[],
             pageNo:1,
-            pageSize:20,
+            pageSize:10,
             total:0,
             taskConten:[],
             id:'1',
@@ -276,6 +300,39 @@ export default {
             clinch:[],
             centerDialogVisible:false,
             checkList:[],
+            amount:[
+                {
+                    startPrice:1000,
+                    endPrice:3000
+                },
+                {
+                    startPrice:3000,
+                    endPrice:5000
+                },
+                {
+                    startPrice:5000,
+                    endPrice:10000
+                },
+                {
+                    startPrice:10000,
+                    endPrice:20000
+                },
+                {
+                    startPrice:20000,
+                    endPrice:50000
+                },
+                {
+                    startPrice:50000,
+                    endPrice:100000
+                },
+                
+            ],
+            startPrice:"",
+            endPrice:"",
+            industry:"",
+            typeName:"",
+            memberId:"",
+            token:""
         }
     },
     components:{
@@ -287,12 +344,20 @@ export default {
         this.zgtasktype();
         this.zgtindtype();
         this.clinchList();
+        this.memberId = sessionStorage.getItem("memberId");
+        this.token = sessionStorage.getItem("token");
     },
     methods:{
         // 页面list接口
         taskList(){
-             let url = `${task.taskPage}?pageNo=${this.pageNo}&pageSize=${this.pageSize}`;
-             this.axios.get(url).then(res=>{
+             let url = `${task.taskPage}?pageNo=${this.pageNo}`;
+             let data = {
+                startPrice:this.startPrice,
+                endPrice:this.endPrice,
+                industry:this.industry,
+                typeName:this.typeName,
+             }
+             this.axios.get(url,{params:data}).then(res=>{
                 if (res.data.code==200){
                     this.taskConten = res.data.result.records;
                     this.total = res.data.result.total;
@@ -339,6 +404,45 @@ export default {
                 paren[i].className = "";
             }
             event.currentTarget.className = "active";
+            if(event.currentTarget.innerHTML=="不限"){
+                this.industry = "";
+            }else{
+                this.industry = event.currentTarget.innerHTML;
+            }
+            
+            this.taskList();
+        },
+        amountList(event){
+            let paren = event.currentTarget.parentElement.children;
+            var a = event.currentTarget.innerHTML;
+            let b = a.split("-");
+            for(var i=0;i<paren.length;i++){
+                paren[i].className = "";
+            }
+            if(a=="不限"){
+                this.startPrice = '';
+                this.endPrice = '';
+            }else{
+                this.startPrice = b[0];
+                this.endPrice = b[1];
+            }
+            event.currentTarget.className = "active";
+            this.taskList();
+            
+            
+        },
+        typelist(event){
+            let paren = event.currentTarget.parentElement.children;
+            for(var i=0;i<paren.length;i++){
+                paren[i].className = "";
+            }
+            event.currentTarget.className = "active";
+            if(event.currentTarget.innerHTML=="不限"){
+                this.typeName = "";
+            }else{
+                this.typeName = event.currentTarget.innerHTML;
+            }
+            this.taskList();
         },
         active2(event){
              let paren = event.currentTarget.parentElement.children;
@@ -347,6 +451,9 @@ export default {
             }
             event.currentTarget.className = "default";
         },
+        // activeTwo(){
+
+        // },
         handleSizeChange(val) {
             this.pageSize = val;
             this.taskList()
@@ -355,21 +462,85 @@ export default {
             this.pageNo = val;
             this.taskList()
         },
-        taskHall(event){
+        taskHall(event,id){
             this.id =  event.currentTarget.firstElementChild.innerHTML;
-            this.$router.push({name:'taskDetails',params: {id: this.id}}) 
+            if(this.memberId == id){
+                this.$router.push({name:'releaseDetails',params: {id: this.id}});
+            }else{
+                this.$router.push({name:'taskDetails',params: {id: this.id}});
+            }
+            
+            
         },
         //发布任务
         visible(){
-            if(this.checkList.length==0){
-                return this.$message.warning("请选择协议")
-            };
+            // if(this.checkList.length==0){
+            //     return this.$message.warning("请选择协议")
+            // };
             // console.log(this.checkList)
-            this.$router.push({
-                name:"taskRelease"
-            });
-            this.centerDialogVisible = false;
-        }
+            if(this.token==null){
+                this.$message.warning("请先登录");
+                setTimeout(()=>{
+                    let routeData = this.$router.resolve({
+                        name: "login"
+                    });
+                    window.open(routeData.href, "_blank");
+                },2000)
+                    
+            }else{
+                this.$router.push({ 
+                    name: 'taskRelease', 
+                })
+            }
+            // this.$router.push({
+            //     name:"taskRelease"
+            // });
+            // this.centerDialogVisible = false;
+        },
+        // published(){
+        //     this.$router.push({
+        //         name:"published"
+        //     });
+        // },
+        acta(property){
+           return function (a,b){
+               return a[property] - b[property];
+           }
+        },
+        bcta(property){
+           return function (a,b){
+               return b[property] - a[property];
+           }
+        },
+        ascending(item){
+            console.log(item)
+            if(item=="startPrice"){
+                this.taskConten.sort(this.acta("startPrice"));
+            }
+            if(item=="period"){
+                this.taskConten.sort(this.acta("period"));
+            }
+            if(item=="count"){
+                this.taskConten.sort(this.acta("count"));
+            }
+            if(item=="releaseTime"){
+                this.taskConten.sort(this.acta("releaseTime"));
+            }
+        },
+        drop(item){
+            if(item=="startPrice"){
+                this.taskConten.sort(this.bcta("startPrice"));
+            }
+            if(item=="period"){
+                this.taskConten.sort(this.bcta("period"));
+            }
+            if(item=="count"){
+                this.taskConten.sort(this.bcta("count"));
+            }
+            if(item=="releaseTime"){
+                this.taskConten.sort(this.bcta("releaseTime"));
+            }
+        },
     },
     filters: {
             dateFormat: function(date, fmt) {
@@ -417,10 +588,10 @@ export default {
         padding-top: 14px;
     }
     .contentTop{
-        width: 100%;
+        width: 1200px;
         background: #ffffff;
-        padding-top: 20px;
-        margin-top: 10px
+        padding: 20px;
+        margin: 0 auto;
     }
     .contentType{
         display: flex;
@@ -429,7 +600,7 @@ export default {
         font-size: 14px;
         line-height: 30px;
         width: 940px;
-        margin: 10px auto;
+        margin: 10px;
     }
     .contentType ul{
         width: 90%;
@@ -446,20 +617,22 @@ export default {
     .contentType .active{
         width: 80px;
         height: 28px;
-        color: #ffffff;
-        background: #339999;
+        color: #339999;
+        background: #ECF7F5;
         border-radius:6px;
         text-align: center;
     }
     .contentSorting{
         font-size: 14px;
-        width: 940px;
-        margin: 20px auto;
+        width: 100%;
+        margin: 0px auto;
         display: flex;
         color: #333333;
         height: 72px;
          align-items: center;
-        border-top: 1px dashed  #999;
+        /* border-top: 1px dashed  #999; */
+        /* border-bottom: 1px solid #E8ECEE; */
+        padding-left: 20px;
     }
     .default{
         color: #339999
@@ -473,19 +646,23 @@ export default {
         padding: 0 10px;
         height: 16px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
     }
     .contentSorting ul li:nth-child(2){
         border-left: 2px solid #999;
         border-right: 2px solid #999
     }
     .content{
-        width: 1000px;
+        width: 1200px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
+        margin-top: 10px;
     }
     .contentRight{
-        width: 270px;
+        width: 240px;
+        /* margin-top: 10px; */
     }
     .demand{
         width: 100%;
@@ -496,6 +673,9 @@ export default {
         justify-content: center;
         border-radius:6px;
         cursor: pointer;
+    }
+    .deman{
+        margin-top: 20px;
     }
     .iconfont{
         font-size:46px; 
@@ -513,8 +693,8 @@ export default {
         margin-bottom: 10px;
     }
     .taskContent{
-        padding: 20px;
-        width: 710px;
+        padding: 20px 0;
+        /* width:100%; */
         display: flex;
         justify-content: space-around;
         background: #ffffff;
@@ -522,11 +702,24 @@ export default {
         margin-bottom: 10px;
         border-radius:6px;
         height: 146px;
+        border-top: 1px solid #F3F3F3;
+       
+    }
+    .contentLeft{
+        width: 950px;
+        background: #ffffff;
+        /* padding: 0 20px; */
+        box-sizing: border-box;
     }
     .Titleimg{
         width: 65%;
         display: flex;
         justify-content: flex-start
+    }
+    .Titleimg img{
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
     }
     .leftTitle{
         display: flex;
@@ -535,6 +728,7 @@ export default {
         justify-content: space-between;
         color: #999;
         margin-left: 16px;
+        font-size: 12px;
     }
     .leftTitle h3{
         font-size: 18px;
@@ -546,16 +740,17 @@ export default {
         background: #EFEFEF;
         margin: 0 5px;
         border-radius: 6px;
+        font-size: 12px;
         
     }
     .price{
         display: flex;
         /* flex-wrap:wrap; */
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: space-evenly;
         color: #999;
         align-items: flex-end;
-        font-size: 14px;
+        font-size: 12px;
     }
     .price span{
         display: inline-block;
@@ -572,7 +767,7 @@ export default {
 
     }
     .priceSum{
-        font-size: 16px;
+        font-size: 18px;
         color: #FF9966;
     }
     .block{
@@ -580,7 +775,7 @@ export default {
         margin: 60px auto;
     }
     .clinch{
-        width:270px;
+        width:240px;
         height:336px;
         background:rgba(255,255,255,1);
         border-radius:6px; 
@@ -647,7 +842,7 @@ export default {
         margin-top: 20px;
     }
     .taskStarImg img{
-        width: 270px;
+        width: 240px;
         height: 100px;
         margin: 5px 0;
     }
@@ -828,4 +1023,40 @@ export default {
 .upload-demo{
   margin-top: 20px;
 }
+.caret i{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-left: 4px;
+}
+.taskBanner{
+    width: 1200px;
+    margin: 10px auto;
+}
+.el-pagination.is-background >>>.el-pager li:not(.disabled).active{
+    background: #339999;
+    border-radius: 50%;
+}
+.el-pagination.is-background >>> .el-pager li:hover{
+    color: #339999;
+}
+
+/* .paging-pagination >>> .el-pagination__total {
+  color: #999999;
+}
+.paging-pagination >>> .active {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  color: #ffffff;
+  border-radius: 50%;
+  background: #339999;
+}
+.paging-pagination >>> li {
+  color: #999999;
+}
+.paging-pagination >>>.btn-next {
+  color: #999999;
+} */
 </style>

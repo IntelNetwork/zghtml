@@ -1,23 +1,33 @@
 <template>
   <div>
-    <loginTop />
+    <div class="loginTops">
+        <div>
+            <img src="../assets/logo.png" alt="">
+        </div>
+        <div class="right">
+            <span type="text" class="" @click="active()">登陆</span>
+            <span type="text" class="landing" >注册</span>
+        </div>
+    </div>
     <div class="login-container">
       <el-form
         autocomplete="on"
         label-position="left"
         label-width="0px"
         class="card-box login-form"
+        :rules="rules"
       >
         <h3 class="title">注册</h3>
         <!-- <p class="text">切勿错失职场良机。登录智工,及时掌握职场最新动态</p> -->
-        <el-form-item prop="username">
+        <el-form-item prop="phone">
           <el-input
-            name="username"
+            name="phone"
             type="text"
             v-model="phone"
             autocomplete="on"
             placeholder="请输入手机号"
-            class="username"
+            class="phone"
+            @blur.native.capture="onChange"
           />
         </el-form-item>
         <el-form-item prop="verification">
@@ -48,10 +58,20 @@
 <script>
   import { mapState, mapMutations } from "vuex";
   import loginTop from "@/components/login/loginTop";
-  import { regist, } from "@/api/login"
+  import { regist } from "@/api/login";
+  let lastTime;
+  let timer;
     export default {
         name: "login",
         data() {
+          var validatePass = (rule, value, callback) => {
+            
+             if (!(/^1[345678]\d{9}$/.test(this.phone))) {
+                callback(new Error('请输入正确的手机号'));
+              } else {
+                callback();
+              }
+            };
             return {
                 phone: "",
                 verification: "",
@@ -59,7 +79,12 @@
                 pwdType: "verification",
                 checkeds: true,
                 time: 0,
-                timea: 3
+                timea: 3,
+                rules:{
+                  phone: [
+                      { validator: validatePass, trigger: 'blur' }
+                    ],
+                }
             };
         },
         components: {
@@ -75,18 +100,59 @@
            ...mapMutations([ "savetoken"]),
           // 验证码接口
             getCode() {
-                if (this.phone == "") {
-                    this.$message.warning("请先输入手机号");
-                    return;
-                }
                 let url = `${regist.registVeri}?mobile=${this.phone}`;
-                this.axios.get(url).then(res=>{
-                  if(res.data.code==200){
-                     this.time = 60;
-                     this.timeSecond();
-                     this.$message.success
+                if (!(/^1[345678]\d{9}$/.test(this.phone))) {
+                    return this.$message.warning("请输入正确的手机号");
+
+                }
+                this.axios.get(`${regist.check}?mobile=${this.phone}`).then(res=>{
+                if(res.data.code==200&&res.data.bizCode=="0000"){
+                   this.axios.get(url).then(res=>{
+                      if(res.data.code==200&&res.data.bizCode=="0000"){
+                        this.time = 60;
+                        this.timeSecond();
+                        this.$message.success(res.data.message)
+                      }else{
+                        this.$message.error(res.data.message);
+                        setTimeout(() => {
+                            this.$router.push({ //核心语句
+                              name: 'login', //跳转的路径
+                              
+                          })
+                        }, 1000);
+                      
+                      }
+                    }).catch(err=>{
+                      console.log(err)
+                    })
+                  
+                  }else{
+                      this.$message.error(res.data.message)
                   }
-                })
+              }).catch(err=>{
+                console.log(err)
+              })
+                
+                
+            },
+            onChange(){
+              this.axios.get(`${regist.check}?mobile=${this.phone}`).then(res=>{
+                if(res.data.code==200&&res.data.bizCode=="0000"){
+                   console.log(res)
+                  
+                  }else{
+                    this.$message.error(res.data.message);
+                    setTimeout(() => {
+                        this.$router.push({ //核心语句
+                          name: 'login', //跳转的路径
+                          
+                      })
+                    }, 1000);
+                   
+                  }
+              }).catch(err=>{
+                console.log(err)
+              })
             },
             // 定时器
             timeSecond() {
@@ -99,44 +165,78 @@
                         clearTimeout(this.times);
                         this.times = null;
                     }
-
                 }, 1000);
             },
-
+            timeFrist() {
+                clearTimeout(this.times);
+                this.times = setTimeout(() => {
+                    if (this.timea > 0) {
+                        this.timea--;
+                        this.timeFrist()
+                    } else {
+                        clearTimeout(this.times);
+                        this.times = null;
+                        // 路由跳转
+                        this.$router.push({
+                            name: "data"
+                        });
+                    };
+                }, 1000);
+            },
             // 注册接口
             login(event) {
-                if (this.phone == "") {
-                    this.$message.warning("请先输入手机号");
+              let that = this
+              console.log(event.currentTarget);
+              let parent = event.currentTarget.parentElement.parentElement.parentElement.parentElement;
+                if (!(/^1[345678]\d{9}$/.test(that.phone))) {
+                    that.$message.warning("请输入正确的手机号");
                     return;
                 }
                 let url = `${regist.regist}`;
                 let data = {
-                  mobile:this.phone,
-                  mobileCode: this.verification
+                  mobile:that.phone,
+                  mobileCode: that.verification
                 }
-                this.axios.post(url,data).then(res=>{
-                  if(res.data.code==200){
-                    this.savetoken(res.data.result.token);
-                    this.$message.success(res.data.message)
-                    event.currentTarget.parentElement.parentElement.parentElement.parentElement.style.display = "none";
-                    event.currentTarget.parentElement.parentElement.parentElement.parentElement.nextElementSibling.style.display = "block";
-                    if (this.timea > 0) {
-                        this.timeSecond()
-                        this.$router.push({
-                            name: "personal"
-                        });
-                    }
-                  }
-                }).catch(err=>{
-                  console.log(err)
-                })
+                
+                // 节流
+                let now = +new Date();
+                if(lastTime && lastTime - now < 2000){
+                    clearTimeout(timer)
+                }
+                timer = setTimeout(function () {
+                    that.axios.post(url,data).then(res=>{
+                      if(res.data.code==200&&res.data.bizCode=="0000"){
+                        that.savetoken(res.data.result.token);
+                        that.$message.success(res.data.message);
+                        parent.style.display = "none";
+                        parent.nextElementSibling.style.display = "block";
+                        if (that.timea > 0) {
+                            that.timeFrist()
+                            // that.$router.push({
+                            //     name: "personal"
+                            // });
+                        }
+                      }else{
+                        that.$message.error(res.data.message);
+                      }
+                    }).catch(err=>{
+                      console.log(err)
+                    });
+                    lastTime = +new Date()
+                },1000)
 
             },
             jump(){
-              this.$router.push({
-                  name: "personal"
+              that.$router.push({
+                  name: "data"
               });
             },
+            active(){
+               this.$router.push({ //核心语句
+                    name: 'login', //跳转的路径
+                    
+                })
+            }
         }
     };
 </script>
@@ -171,7 +271,7 @@
         color: #333;
         height: 47px;
       }
-      .username{
+      .phone{
         width: 100%;
       }
       .verification{
@@ -275,4 +375,48 @@
         background:rgba(51,153,153,0.7);
         border: none
       }
+
+      .loginTops{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 120px;
+        padding: 8px 16%;
+        box-shadow: 0 0 20px -15px #080103 !important;
+        background: #ffffff;
+        z-index: 100;
+        position: relative;
+    }
+    .loginTops .right{
+        /* margin-top: 10px; */
+         /* line-height: 60px; */
+        display: flex;
+        align-items: center;
+    }
+   .loginTops .right span{
+        width:94px;
+        height:40px;
+        background:rgba(255,255,255,1);
+        border:2px solid #ffffff;
+        display: inline-block;
+        margin-right: 20px;
+        line-height: 40px;
+        text-align: center;
+    }
+    /* .registered{
+        
+    } */
+    // .el-button{
+    //     color: #333333;
+    //     /* border: none !important; */
+    //     font-size: 14px;
+    // }
+    .landing{
+        border:2px solid rgba(51, 153, 153, 1) !important;
+        border-radius:6px;
+        color: #339999;
+        height: 36px;
+        width: 100px;
+        line-height: 10px
+    }
 </style>

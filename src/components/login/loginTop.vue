@@ -1,12 +1,12 @@
 <template>
     <div class="loginTop">
-        <span>
+        <div>
             <img src="../../assets/logo.png" alt="">
-        </span>
-        <span class="right">
-            <el-button class="landing" @click="login">登陆</el-button>
-            <el-button type="text" class="registered" @click="advert">注册</el-button>
-        </span>
+        </div>
+        <div class="right">
+            <span type="text" class="" @click="active($event,'login')">登陆</span>
+            <span type="text" class="" @click="active($event,'advert')">注册</span>
+        </div>
     </div>
 </template>
 <script>
@@ -14,7 +14,7 @@
 export default {
   data() {
     return {
-     
+        
     };
   },
   mounted() {
@@ -33,7 +33,25 @@ export default {
             this.$router.push({
                 name:'login',
             })
-        }
+        },
+        active(event,item){
+            let paren = event.currentTarget.parentElement.children;
+            for(var i=0;i<paren.length;i++){
+                paren[i].className = "";
+            }
+            event.currentTarget.className = "landing";
+            if(item=="login"){
+                this.$router.push({ //核心语句
+                    name: 'login', //跳转的路径
+                    
+                })
+            }else{
+                this.$router.push({ //核心语句
+                    name: 'registered', //跳转的路径
+                    
+                })
+            }
+        },
   }
 };
 </script>
@@ -51,16 +69,35 @@ export default {
     }
     .right{
         /* margin-top: 10px; */
-         line-height: 60px;
+         /* line-height: 60px; */
+        display: flex;
+        align-items: center;
+    }
+    .right span{
+        width:94px;
+        height:40px;
+        background:rgba(255,255,255,1);
+        border:2px solid #ffffff;
+        display: inline-block;
+        margin-right: 20px;
+        line-height: 40px;
+        text-align: center;
+    }
+    /* .registered{
+        
+    } */
+    .el-button{
+        color: #333333;
+        /* border: none !important; */
+        font-size: 14px;
     }
     .landing{
-        border: 1px solid #339999;
+        border:2px solid rgba(51, 153, 153, 1) !important;
+        border-radius:6px;
         color: #339999;
         height: 36px;
         width: 100px;
         line-height: 10px
     }
-    .registered{
-        color: #333333;
-    }
+    
 </style>
