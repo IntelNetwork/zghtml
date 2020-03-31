@@ -130,120 +130,173 @@
       </div>
       <!-- 进行中的任务 -->
       <div class="right">
-    
-        <div class="righttltle">
-          <ul class="Projectleft">
-            <li>
-              已完成任务
-              <p></p>
-            </li>
-            <li>
-              <img src="./../../assets/bidder/bidder1.png" />
-            </li>
-          </ul>
-        </div>
-        <!-- 已完成任务 -->
-        <div class="completed">
-          <div class="ok">
-            <ul class="missionname">
-              <li>
-                <span>任务名称：</span>
-                <span>社交平台软件开发</span>
-              </li>
-              <li>
-                <span>发布方：</span>
-                <span>上海好运科技有限公司</span>
-              </li>
-              <li>
-                <span>经纪人：</span>
-                <span>智工经纪人</span>
-              </li>
-            </ul>
-            <ul class="schedule scheduleone">
-              <li>任务进度：</li>
-              <li class="schedulebar completion">
-                <el-progress :percentage="100" :stroke-width="14"></el-progress>
-              </li>
-              <li :style="{margin:'2px 0px 0px 20px'}">
-                用时：
-                <span>2个月</span>
-              </li>
-            </ul>
-            <ul class="over">
-              <li>
-                <span>进展反馈：</span>
-                <span>已实现全部功能，通过测试</span>
-              </li>
-              <li :style="{color:'#339999'}">查看详情></li>
+          <el-tabs v-model="activeName">
+            <el-tab-pane label="已发布任务" name="first" class="tabe">
+              <div class="completed">
+                  <!-- <div class="righttltle">
+                    <ul class="Projectleft">
+                      <li>
+                        已发布任务
+                        <p></p>
+                      </li>
+                      <li>
+                        <img src="./../../assets/bidder/bidder1.png" />
+                      </li>
+                    </ul>
+                    <ul>
+                      <el-button type="primary" icon="el-icon-star-off" @click="visible">发布任务</el-button>
+                    </ul>
+                  </div> -->
+                  <!-- 已完成任务 -->
+                  <div class="completed">
+                    <div class="ok" v-for="(item,index) in release" :key="index">
+                      <ul class="missionname">
+                        <li>
+                          <span>任务名称：</span>
+                          <span>{{item.name}}</span>
+                        </li>
+                        <li>
+                          <span>发布方：</span>
+                          <span>{{item.taskMemberName}}</span>
+                        </li>
+                        <li>
+                          <span>经纪人：</span>
+                          <span>智工经纪人</span>
+                        </li>
+                      </ul>
+                      <ul class="schedule scheduleone">
+                        <li>任务进度：</li>
+                        <li class="schedulebar completion">
+                          <el-progress :percentage="100" :stroke-width="14"></el-progress>
+                        </li>
+                        <li :style="{margin:'2px 0px 0px 20px'}">
+                          用时：
+                          <span>{{item.period}}个月</span>
+                        </li>
+                      </ul>
+                      <ul class="over">
+                        <li>
+                          <span>进展反馈：</span>
+                          <span>已实现全部功能，通过测试</span>
+                        </li>
+                        <li class="relea" :style="{color:'#339999'}" @click="relea(item.id)">查看详情></li>
+                      </ul>
+                    </div>
+                  </div>
+              </div>
+              <div>
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="pageNo"
+                  :page-size="pageSize"
+                  layout="total, prev, pager, next"
+                  :total="total">
+                </el-pagination>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="已完成任务" name="second">
+              <div>
+                  <div class="completed">
+                    <div class="ok"  v-for="(item,index) in belease" :key="index">
+                      <ul class="missionname">
+                        <li>
+                          <span>任务名称：</span>
+                          <span>{{item.name}}</span>
+                        </li>
+                        <li>
+                          <span>发布方：</span>
+                          <span>{{item.taskMemberName}}</span>
+                        </li>
+                        <li>
+                          <span>经纪人：</span>
+                          <span>智工经纪人</span>
+                        </li>
+                      </ul>
+                      <ul class="schedule">
+                          <li>任务进度：</li>
+                          <li class="schedulebar">
+                              <el-progress :percentage="90" :stroke-width="14"></el-progress>
+                          </li>
+                          <li :style="{margin:'2px 0px 0px 20px'}">
+                              用时：
+                              <span>{{item.period}}个月</span>
+                          </li>
+                      </ul>
+                      <ul class="over">
+                        <li>
+                          <span>进展反馈：</span>
+                          <span>已实现全部功能，通过测试</span>
+                        </li>
+                        <li class="relea" :style="{color:'#339999'}">查看详情></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div>
+                    <el-pagination
+                      @size-change="handleSizeChange2"
+                      @current-change="handleCurrentChange2"
+                      :current-page.sync="pageNo2"
+                      :page-size="pageSize2"
+                      layout="total, prev, pager, next"
+                      :total="total2">
+                    </el-pagination>
+                  </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="待审核任务" name="third">
+              <div class="completed">
+                  <div class="ok"  v-for="(item,index) in getCheck" :key="index">
+                    <ul class="missionname">
+                      <li>
+                        <span>任务名称：</span>
+                        <span>{{item.name}}</span>
+                      </li>
+                      <li>
+                        <span>发布方：</span>
+                        <span>{{item.taskMemberName}}</span>
+                      </li>
+                      <li>
+                        <span>经纪人：</span>
+                        <span>智工经纪人</span>
+                      </li>
+                    </ul>
+                    <ul class="schedule">
+                        <li>任务进度：</li>
+                        <li class="schedulebar">
+                            <el-progress :percentage="90" :stroke-width="14"></el-progress>
+                        </li>
+                        <li :style="{margin:'2px 0px 0px 20px'}">
+                            用时：
+                            <span>{{item.period}}个月</span>
+                        </li>
+                    </ul>
+                    <ul class="over">
+                      <li>
+                        <span>进展反馈：</span>
+                        <span>已实现全部功能，通过测试</span>
+                      </li>
+                      <li class="relea" :style="{color:'#339999'}">查看详情></li>
+                    </ul>
+                  </div>
+              </div>
+              <div>
+                <el-pagination
+                  @size-change="handleSizeChange3"
+                  @current-change="handleCurrentChange3"
+                  :current-page.sync="pageNo3"
+                  :page-size="pageSize3"
+                  layout="total, prev, pager, next"
+                  :total="total3">
+                </el-pagination>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+          <div>
+            <ul>
+              <el-button type="primary" icon="el-icon-star-off" @click="visible">发布任务</el-button>
             </ul>
           </div>
-          <div class="ok">
-            <ul class="missionname">
-              <li>
-                <span>任务名称：</span>
-                <span>社交平台软件开发</span>
-              </li>
-              <li>
-                <span>发布方：</span>
-                <span>上海好运科技有限公司</span>
-              </li>
-              <li>
-                <span>经纪人：</span>
-                <span>智工经纪人</span>
-              </li>
-            </ul>
-            <ul class="schedule scheduleone">
-              <li>任务进度：</li>
-              <li class="schedulebar completion">
-                <el-progress :percentage="100" :stroke-width="14"></el-progress>
-              </li>
-              <li :style="{margin:'2px 0px 0px 20px'}">
-                用时：
-                <span>2个月</span>
-              </li>
-            </ul>
-            <ul class="over">
-              <li>
-                <span>进展反馈：</span>
-                <span>已实现全部功能，通过测试</span>
-              </li>
-              <li :style="{color:'#339999'}">查看详情></li>
-            </ul>
-          </div>
-          <div class="ok">
-            <ul class="missionname">
-              <li>
-                <span>任务名称：</span>
-                <span>社交平台软件开发</span>
-              </li>
-              <li>
-                <span>发布方：</span>
-                <span>上海好运科技有限公司</span>
-              </li>
-              <li>
-                <span>经纪人：</span>
-                <span>智工经纪人</span>
-              </li>
-            </ul>
-            <ul class="schedule">
-                <li>任务进度：</li>
-                <li class="schedulebar">
-                    <el-progress :percentage="90" :stroke-width="14"></el-progress>
-                </li>
-                <li :style="{margin:'2px 0px 0px 20px'}">
-                    用时：
-                    <span>2个月</span>
-                </li>
-            </ul>
-            <ul class="over">
-              <li>
-                <span>进展反馈：</span>
-                <span>已实现全部功能，通过测试</span>
-              </li>
-              <li :style="{color:'#339999'}">查看详情></li>
-            </ul>
-          </div>
-        </div>
       </div>
     </div>
     <div>
@@ -255,9 +308,11 @@
 <script>
 import headerSelect from "@/components/headerSelect";
 import fonter from "@/components/fonter";
+import { taskDetails } from "@/api/task/taskList"
 export default {
   data() {
     return {
+      activeName:"first",
       reverse: false,
       activities: [
         {
@@ -269,18 +324,116 @@ export default {
         { content: "2020-01-22——2020-03-04", color: "#C2E6E6" },
         { content: "2020-01-22——2020-03-04", color: "#C2E6E6" },
         { content: "2020-01-22——2020-03-04", color: "#C2E6E6" }
-      ]
+      ],
+      memberId:"",
+      release:[],
+      belease:[],
+      getCheck:[],
+      id:"",
+      pageNo:0,
+      total:0,
+      pageSize:10,
+      pageNo2:0,
+      total2:0,
+      pageSize2:10,
+      pageNo3:0,
+      total3:0,
+      pageSize3:10
     };
   },
   components: {
     headerSelect,
     fonter
   },
-  created() {},
+  created() {
+    this.memberId = sessionStorage.getItem("memberId");
+    this.format();
+    this.format2();
+    this.format3();
+  },
   methods: {
-    format(percentage) {
-      return percentage === 100 ? "满" : `${percentage}%`;
-    }
+    format() {
+      let url = `${taskDetails.release}?pageNo=${this.pageNo}`;
+      this.axios.get(url).then(res=>{
+        // console.log(res)
+        if(res.data.code==200){
+          this.release = res.data.result.records;
+          this.total = res.data.result.total;
+          this.pageNo = res.data.result.current;
+        }
+      })
+    },
+    format2() {
+      let url = `${taskDetails.byBelease}?pageNo=${this.pageNo2}`;
+      this.axios.get(url).then(res=>{
+        // console.log(res)
+        if(res.data.code==200){
+          this.belease = res.data.result.records;
+          this.total2 = res.data.result.total;
+          this.pageNo2 = res.data.result.current;
+          console.log(this.belease )
+        }
+      }).catch(err=>{
+        console.log(err)
+      })
+    },
+    format3() {
+      let url = `${taskDetails.getCheck}?pageNo=${this.pageNo3}`;
+      this.axios.get(url).then(res=>{
+        // console.log(res)
+        if(res.data.code==200){
+          this.getCheck = res.data.result.records;
+          this.total3 = res.data.result.total;
+          this.pageNo3 = res.data.result.current;
+          console.log(this.getCheck )
+        }
+      }).catch(err=>{
+        console.log(err)
+      })
+    },
+    visible(){
+      this.$router.push({
+        name:"taskRelease"
+      })
+    },
+    deleteProject(){
+
+    },
+    // handleClick(tab, event) {
+    //   console.log(tab, event);
+    // },
+    relea(id){
+      this.$router.push({
+        name:"releaseDetails",
+        params:{
+          id:id
+        }
+      })
+    },
+    handleSizeChange(val) {
+        this.pageSize = val;
+        this.format()
+    },
+    handleCurrentChange(val) {
+        this.pageNo = val;
+        this.format()
+    },
+    handleSizeChange2(val) {
+        this.pageSize2 = val;
+        this.format2()
+    },
+    handleCurrentChange2(val) {
+        this.pageNo2 = val;
+        this.format2()
+    },
+    handleSizeChange3(val) {
+        this.pageSize3 = val;
+        this.format3()
+    },
+    handleCurrentChange3(val) {
+        this.pageNo3 = val;
+        this.format3()
+    },
   }
 };
 </script>
@@ -428,9 +581,11 @@ export default {
   margin-top: 7px !important;
 }
 .right {
-  width: 774px;
+  width: 790px;
   background: rgba(255, 255, 255, 1);
   opacity: 1;
+  padding: 0 20px;
+  display: flex;
 }
 .righttltle {
   width: 95%;
@@ -546,38 +701,17 @@ export default {
 .completed {
   width: 100%;
   margin-top: -15px;
+  min-height: 700px;
 }
 .ok {
-  width: 709px;
+  width: 680px;
   height: 90px;
   margin: 20px auto;
   background: rgba(254, 254, 254, 1);
   box-shadow: 0px 5px 6px rgba(25, 25, 25, 0.16);
   opacity: 1;
 }
-.workbutton {
-  width: 99px;
-  height: 30px;
-  text-align: center;
-  line-height: 1px;
-  font-size: 12px;
-  color: #ffffff;
-  background: rgba(51, 153, 153, 1);
-  opacity: 1;
-  border-radius: 4px;
-}
-.worktit {
-  width: 99px;
-  height: 30px;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid rgba(51, 153, 153, 1);
-  opacity: 1;
-  font-size: 12px;
-  border-radius: 4px;
-  text-align: center;
-  color: #339999;
-  line-height: 1px;
-}
+
 .over {
   width: 93%;
   margin: 0 auto;
@@ -595,5 +729,43 @@ export default {
 }
 .scheduleone {
   margin: 15px auto 15px auto;
+}
+.el-button--primary{
+  background-color: #339999;
+  border: none;
+  height: 24px;
+  font-size: 12px;
+  padding: 0;
+  width: 80px;
+  margin-top: 10px;
+}
+.relea{
+  cursor: pointer;
+}
+
+.el-tabs>>>.el-tabs__header .el-tabs__item.is-active,.el-tabs>>>.el-tabs__header .el-tabs__item:hover{
+  color: #339999;
+  font-size: 16px;
+}
+.el-tabs>>>.el-tabs__header .el-tabs__item{
+  /* color: #339999; */
+  font-size: 16px;
+}
+.el-tabs>>>.el-tabs__nav.is-top .el-tabs__active-bar{
+  background: #339999;
+}
+.el-tabs>>>.el-tabs__header .el-tabs__nav-wrap{
+  width: 50%;
+
+}
+.el-tabs>>>.el-tabs__header .el-tabs__nav-wrap::after {
+  background-color: #ffffff;
+}
+.el-tabs{
+  width: 100%;
+}
+.el-pagination{
+  margin-top: 20px;
+  text-align: center;
 }
 </style>

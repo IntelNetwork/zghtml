@@ -1,12 +1,21 @@
 <template>
   <div>
-    <loginTop />
+    <div class="loginTop">
+        <div>
+            <img src="../assets/logo.png" alt="">
+        </div>
+        <div class="right">
+            <span type="text" class="landing">登陆</span>
+            <span type="text" class="" @click="active()">注册</span>
+        </div>
+    </div>
     <div class="login-container">
       <el-form
         autocomplete="on"
         label-position="left"
         label-width="0px"
         class="card-box login-form"
+        :rules="rules"
       >
         <h3 class="title">欢迎回来</h3>
         <p class="text">切勿错失职场良机。登录智工,及时掌握职场最新动态</p>
@@ -44,9 +53,18 @@
     import loginTop from "@/components/login/loginTop";
     import { login } from "@/api/login";
     import { mapState, mapMutations } from "vuex";
+    let timer;
+    let lastTime;
     export default {
         name: "login",
         data() {
+          var validatePass = (rule, value, callback) => {
+             if (!(/^1[345678]\d{9}$/.test(this.phone))) {
+                callback(new Error('请输入正确的手机号'));
+              } else {
+                callback();
+              }
+            };
             return {
                 phone: "",
                 verification: "",
@@ -56,6 +74,12 @@
                 time: 0,
                 timea: 3,
                 password:"",
+                rules:{
+                  phone: [
+                      { validator: validatePass, trigger: 'blur' }
+                    ],
+                }
+                
             };
         },
         components: {
@@ -72,16 +96,20 @@
             ...mapMutations([ "savetoken","saveMemberId","saveusername"]),
            // 验证码接口
             getCode() {
-                if (this.phone == "") {
-                    this.$message.warning("请先输入手机号");
-                    return;
+                if (!(/^1[345678]\d{9}$/.test(this.phone))) {
+                    return this.$message.warning("请输入正确的手机号");
                 }
                 let url = `${login.loginVeri}?mobile=${this.phone}`;
                 this.axios.get(url).then(res=>{
-                  if(res.data.code==200){
+                  if(res.data.code==200&&res.data.bizCode=="0000"){
                      this.time = 60;
                      this.timeSecond();
+                     this.$message.success(res.data.message)
+                  }else{
+                     this.$message.error(res.data.message)
                   }
+                }).catch(err=>{
+                  console.log(err)
                 })
             },
             // 定时器
@@ -101,60 +129,73 @@
 
             // 登陆接口
             login(event) {
-                if (this.phone == "") {
-                    this.$message.warning("请先输入手机号");
-                    return;
+              let that = this;
+                if (!(/^1[345678]\d{9}$/.test(that.phone))) {
+                    return that.$message.warning("请输入正确的手机号");
+                    
                 }
                 let url = `${login.login}`;
                 let data = {
-                  mobile:this.phone,
-                  mobileCode: this.verification
+                  mobile:that.phone,
+                  mobileCode: that.verification
                 }
-                this.axios.post(url,data).then(res=>{
-                  if(res.data.code==200){
-                    this.savetoken(res.data.result.token);
-                    this.saveMemberId(res.data.result.userInfo.id);
-                    this.saveusername(res.data.result.userInfo.username);
-                    this.$message.success(res.data.message)
-                    // event.currentTarget.parentElement.parentElement.parentElement.parentElement.style.display = "none";
-                    // event.currentTarget.parentElement.parentElement.parentElement.parentElement.nextElementSibling.style.display = "block";
-                    if (this.timea > 0) {
-                        this.timeSecond()
-                        this.$router.push({
+                // 防抖
+                // if(timer){
+                //     clearTimeout(timer)
+                // }
+                // timer = setTimeout(function () {
+                //   that.axios.post(url,data).then(res=>{
+                //     if(res.data.code==200&&res.data.bizCode=="0000"){
+                //       that.savetoken(res.data.result.token);
+                //       that.saveMemberId(res.data.result.userInfo.id);
+                //       that.saveusername(res.data.result.userInfo.username);
+                //       that.$message.success(res.data.message);
+                //       that.$router.push({
+                //           name: "data"
+                //       });
+                      
+                //     }else{
+                //       that.$message.error(res.data.message);
+                //     }
+                //   }).catch(err=>{
+                //     console.log(err)
+                //   })
+                //     timer = undefined;
+                // },1000)
+
+                // 节流
+                let now = +new Date();
+                if(lastTime && lastTime - now < 2000){
+                    clearTimeout(timer)
+                }
+                timer = setTimeout(function () {
+                    that.axios.post(url,data).then(res=>{
+                      if(res.data.code==200&&res.data.bizCode=="0000"){
+                        that.savetoken(res.data.result.token);
+                        that.saveMemberId(res.data.result.userInfo.id);
+                        that.saveusername(res.data.result.userInfo.username);
+                        that.$message.success(res.data.message);
+                        that.$router.push({
                             name: "data"
                         });
-                    }
-                  }
-                }).catch(err=>{
-                  console.log(err)
-                })
+                        
+                      }else{
+                        that.$message.error(res.data.message);
+                      }
+                    }).catch(err=>{
+                      console.log(err)
+                    })
+                    lastTime = +new Date()
+                },1000)
 
             },
-            setCookie(c_name, c_pwd, exdays) {
-                var exdate = new Date();
-                exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays);
-                window.document.cookie =
-                    "userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
-                window.document.cookie =
-                    "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
-            },
-            getCookie: function() {
-                if (document.cookie.length > 0) {
-                    var arr = document.cookie.split("; ");
-                    for (var i = 0; i < arr.length; i++) {
-                        var arr2 = arr[i].split("=");
-                        if (arr2[0] == "userName") {
-                            this.username = arr2[1];
-                        } else if (arr2[0] == "userPwd") {
-                            this.verification = arr2[1];
-                        }
-                    }
-                    this.checked = ["记住密码"];
-                }
-            },
-            clearCookie: function() {
-                this.setCookie("", "", -1);
+            active(){
+              this.$router.push({ //核心语句
+                    name: 'registered', //跳转的路径
+                    
+                })
             }
+
         }
     };
 </script>
@@ -243,8 +284,8 @@
     .el-form-item.login,.el-form-item.login:active{
       border: 1px solid #ffffff;
     }
-    .button.el-button,
-    .button.el-button:hover {
+    .login .button.el-button,
+    .login .button.el-button:hover {
       width: 100%;
       background:rgba(51,153,153,1);
       color: #fff;
@@ -293,4 +334,49 @@
         background:rgba(51,153,153,0.7);
         border: none
       }
+
+
+      .loginTop{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 120px;
+        padding: 8px 16%;
+        box-shadow: 0 0 20px -15px #080103 !important;
+        background: #ffffff;
+        z-index: 100;
+        position: relative;
+    }
+    .loginTop .right{
+        /* margin-top: 10px; */
+         /* line-height: 60px; */
+        display: flex;
+        align-items: center;
+    }
+    .loginTop .right>span{
+        width:94px;
+        height:40px;
+        background:rgba(255,255,255,1);
+        border:2px solid #ffffff;
+        display: inline-block;
+        margin-right: 20px;
+        line-height: 40px;
+        text-align: center;
+    }
+    /* .registered{
+        
+    } */
+    .loginTop .right .el-button{
+        color: #333333;
+        font-size: 14px;
+    }
+    .landing{
+        border:2px solid rgba(51, 153, 153, 1) !important;
+        border-radius:6px;
+        color: #339999;
+        height: 36px;
+        width: 100px;
+        line-height: 10px
+    }
+    
 </style>

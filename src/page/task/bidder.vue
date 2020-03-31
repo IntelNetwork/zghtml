@@ -135,7 +135,7 @@
               <img src="./../../assets/bidder/bidder1.png" />
             </li>
           </ul>
-          <el-button type="text" class="winning">选为中标者</el-button>
+          <el-button type="text" class="winning" @click="bidded">选为中标者</el-button>
         </div>
         <div class="block">
           <el-timeline>
@@ -190,6 +190,59 @@
         </div>
       </div>
     </div>
+    <!-- <el-dialog title="任务订单确认" :visible.sync="centerDialogVisible" width="1000px" center >
+         <div class="dialog">
+            <div class="top">
+              <div>
+                <p>需求方：{{result.memberName}}</p>
+              </div>
+              <div>
+                <p>服务方：{{result.taskMemberName}}</p>
+              </div>
+            </div>
+            <div class="title">
+              <p>任务名称：在LTE网络下操纵目标台语音短信的系统</p>
+            </div>
+            <div class="top">
+              <div>
+                <p>项目周期：2个月</p>
+              </div>
+              <div>
+                <p>发布日期：2020-01-07</p>
+              </div>
+            </div>
+            <div class="taskDescribe">
+              <div class="taskDescribeTitle">
+                <p>任务内容：通过将目标移动台从LTE网络重定向到GSM网络，在GSM网络下对目标移动台进行中间人攻击，
+                    实现了在LTE网络下获取及操纵目标移动台短信及语音信息的功能。
+                    实现步骤：
+                    1/由目标移动台手机号码获取目标移动台IMSI参数信息；根据目标移动台IMSI参数信息，
+                    LTE基站隐蔽定点地吸入目标移动台；
+                    2/LTE基站将目标移动台重定向到GSM基站，目标移动台从4GLTE网络回落到GSM网络；
+                    3/在GSM网络下对目标移动台进行中间人攻击，隐蔽定点控制目标移动台的短信及语音信息。
+                    具体的一些操作难点，我们可
+                </p>
+              </div>
+              
+            </div>
+            <div class="top">
+              <div>
+                <p>任务(订单)编号：202003132230</p>
+              </div>
+              <div>
+                <p>订单创建时间：2020-03-13 16:15:30</p>
+              </div>
+            </div>
+            <div class="taskDescribe">
+              <div>
+                <p>任务(订单)最终确认金额：</p>
+              </div>
+              <div class="">
+
+              </div>
+            </div>
+         </div>
+    </el-dialog> -->
     <div>
       <fonter />
     </div>
@@ -199,6 +252,7 @@
 <script>
 import headerSelect from "@/components/headerSelect";
 import fonter from "@/components/fonter";
+import { taskDetails, order } from "@/api/task/taskList"
 export default {
   data() {
     return {
@@ -213,15 +267,55 @@ export default {
         { content: "2020-01-22——2020-03-04", color: "#C2E6E6" },
         { content: "2020-01-22——2020-03-04", color: "#C2E6E6" },
         { content: "2020-01-22——2020-03-04", color: "#C2E6E6" }
-      ]
+      ],
+      id:"",
+      taskId:"",
+      memberId:"",
+      hitState:"",
+      // centerDialogVisible: true,
+      username:"",
+      // result:{},
     };
   },
   components: {
     headerSelect,
     fonter
   },
-  created() {},
-  methods: {}
+  created() {
+    this.id = this.$route.params.id;
+    this.taskId = this.$route.params.taskId;//任务id
+    this.memberId = sessionStorage.getItem("memberId");
+    this.username = sessionStorage.getItem("username");
+  },
+  methods: {
+    bidded(){
+      let url = `${taskDetails.examine}`;
+      let data = {
+        id: this.id,
+        taskId: this.taskId,
+        memberId: this.memberId,
+        hitState: "1"
+      }
+      this.axios.put(url,data).then(res=>{
+        if(res.data.code==200){
+          this.$message.success(res.data.message);
+          this.$router.push({
+            name:"releaseDetails",
+            params: {id: this.taskId,hitState:"1"}
+          })
+          // if(res.data.bizCode=="005002001"){
+          //   this.centerDialogVisible = false;
+          // }else{
+          //   this.centerDialogVisible = true;
+            
+          // }
+        }
+      }).catch(err=>{
+        console.log(err)
+      })
+    },
+    
+  }
 };
 </script>
 <style scoped>
@@ -456,10 +550,35 @@ export default {
   color: rgba(51, 153, 153, 1);
   opacity: 1;
 }
-/* .satisfaction1 {
-    color: #339999;
+.dialog{
+  padding: 0 30px;
+  color: #333333;
 }
-.satisfaction2 {
-    color: #339999;
-} */
+.top{
+  height: 40px;
+  width: 100%;
+  background:rgba(51,153,153,0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  -webkit-box-shadow:none;
+  box-shadow:none !important;
+}
+.title{
+  height: 40px;
+  line-height: 40px;
+  padding: 0 40px;
+}
+.taskDescribe {
+  width: 670px;
+  margin-top: 14px;
+  padding: 0 40px;
+  line-height: 20px;
+}
+.taskDescribeTitle {
+  margin-bottom: 10px;
+  color: #333333;
+  font-size: 14px;
+}
 </style>

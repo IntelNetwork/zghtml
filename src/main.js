@@ -17,7 +17,11 @@ import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as  filters from './common/filters/filters'
- 
+import '@fullcalendar/core/main.css'
+import '@fullcalendar/daygrid/main.css'
+import '@fullcalendar/timegrid/main.css'
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 // Vue.use(Element, {
 //   size: 'medium', // set element-ui default size
 //   i18n: (key, value) => i18n.t(key, value) 
@@ -56,7 +60,7 @@ new Vue({
         if (response.data.code === 501) {
           this.$message({
             showClose: true,
-            message: '用户过期或有其它人在别处登录！',
+            message: '用户过期或有其它人在别处登录！请重新登录',
             type: 'error',
             duration: 2000,
           });
@@ -64,8 +68,9 @@ new Vue({
             // this.$router.push({
             //   path: '/login'
             // });
-            sessionStorage.clear();
+            
           }, 2000);
+          sessionStorage.clear();
         } else if (response.data.token) { // 判断token是否存在，如果存在说明需要更新token
           Storage.localSet('token', response.data.token) // 覆盖原来的token(默认一天刷新一次)
         }

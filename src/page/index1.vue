@@ -66,7 +66,7 @@
                 <el-col :span="8">
                     <div class="grid-content content"> 
                         <div class="content_top">
-                            <span><p>今日推荐</p></span>
+                            <p>今日推荐</p>
                             <el-carousel trigger="click" height="296px">
                                 <el-carousel-item v-for="(item,index) in banner" :key="index">
                                     <img :src="item.src" alt="">
@@ -284,7 +284,7 @@
         font-size: 14px;
         
     }
-    .content_top span>p{
+    .content_top p{
         width: 100%;
         margin-bottom: 10px;
         /* height: 52px; */
