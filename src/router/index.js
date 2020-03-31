@@ -68,30 +68,30 @@ export const constantRouterMap = [
       component: () => import('@/page/personal/education'),
       // meta: { title: '4', icon: 'el-icon-caret-right' }
     },
-    {
-      path: '/autograph',
-      name: 'autograph',
-      component: () => import('@/page/personal/autograph'),
-      // meta: { title: '5', icon: 'el-icon-caret-right' }
-    },
-    {
-      path: '/data',
-      name: 'data',
-      component: () => import('@/page/personal/data'),
-      // meta: { title: '资料与账号', icon: 'el-icon-caret-right' }
-    },
+    // {
+    //   path: '/autograph',
+    //   name: 'autograph',
+    //   component: () => import('@/page/personal/autograph'),
+    //   // meta: { title: '5', icon: 'el-icon-caret-right' }
+    // },
+    // {
+    //   path: '/data',
+    //   name: 'data',
+    //   component: () => import('@/page/personal/data'),
+    //   // meta: { title: '资料与账号', icon: 'el-icon-caret-right' }
+    // },
     // {
     //   path: '/potentialContacts',
     //   name: 'potentialContacts',
     //   component: () => import('@/page/personal/potentialContacts'),
     //   // meta: { title: '潜在人脉', icon: 'el-icon-caret-right' }
     // },
-    {
-      path: '/attention',
-      name: 'attention',
-      component: () => import('@/page/personal/attention'),
-      // meta: { title: '我关注的人', icon: 'el-icon-caret-right' }
-    },
+    // {
+    //   path: '/attention',
+    //   name: 'attention',
+    //   component: () => import('@/page/personal/attention'),
+    //   // meta: { title: '我关注的人', icon: 'el-icon-caret-right' }
+    // },
     {
       path: '/findFriends',
       name: 'findFriends',
