@@ -5,14 +5,11 @@
       defaultView="timeGridDay"
       locale="zh-cn"
       :header="{
-        left: 'prev,next',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        right: ''
       }"
       :buttonText="buttonText"
       :plugins="calendarPlugins"
       :weekends="calendarWeekends"
-      :events="calendarEvents"
       :eventLimit="true"
       eventLimitText="更多"
       @dateClick="handleDateClick"
@@ -21,6 +18,11 @@
       />
  </div>
  <!-- :events="getCalendarEvents" -->
+ <!-- :header="{
+        left: 'prev,next',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      }" -->
  <!-- <div>
      <FullCalendar :buttonText="buttonText" @dateClick="handleDateClick" :plugins="calendarPlugins" locale="zh-cn"  />
  </div> -->
@@ -97,7 +99,7 @@ export default {
     },
     handleDateClick (arg) {//添加时间
         // this.times = arg.data
-        console.log(arg)
+        // console.log(arg)
         // this.calendarEvents.push({ // add new event data
         //   title: '11',
         //   start: arg.date,
@@ -106,15 +108,16 @@ export default {
         // })
         // console.log(this.calendarEvents,5555555)
 
-
-      if (confirm('您要将事件添加到 ' + arg.dateStr + ' ?')) {
-        this.calendarEvents.push({ // add new event data
-          title: arg.dateStr,
-          start: arg.date,
-          allDay: arg.allDay,
-          color: '#3EC7A7',
-        })
-      }
+    
+    //   if (confirm('您要将事件添加到 ' + arg.dateStr + ' ?')) {
+    //     this.calendarEvents.push({ // add new event data
+    //       title: arg.dateStr,
+    //       start: arg.date,
+    //       allDay: arg.allDay,
+    //       color: '#3EC7A7',
+    //     })
+    //   }
+       this.$emit('handleDateClick',this.calendarEvents)
       // this.calendarApi.refetchEvents()
     },
     handleEventClick (info) {

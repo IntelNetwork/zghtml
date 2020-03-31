@@ -200,9 +200,9 @@
     };
 </script>
 <style rel="stylesheet/scss" lang="scss">
-    $bg: #2d3a4b;
-    $dark_gray: #889aa4;
-    $light_gray: #333;
+    // $bg: #2d3a4b;
+    // $dark_gray: #889aa4;
+    // $light_gray: #333;
     
     .login-container {
       display: block;
