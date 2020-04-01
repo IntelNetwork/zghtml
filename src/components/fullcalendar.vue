@@ -136,7 +136,7 @@ export default {
 .fc-content .fc-time-grid-event >>>.fc-time, .fc-content .fc-time-grid-event >>>.fc-title{
   color: #3EC7A7;
 }
-.fc-time-grid-event>>>fc-event, .fc-event:hover .fc-title{
+.fc-time-grid-event>>>.fc-event, .fc-event:hover .fc-title{
   color: #3EC7A7 !important;
 }
 /* .fc-unthemed >>> th, .fc-unthemed >>> td, .fc-unthemed >>> thead, .fc-unthemed >>> tbody, .fc-unthemed >>> .fc-divider, .fc-unthemed >>> .fc-row, .fc-unthemed >>> .fc-content, .fc-unthemed >>> .fc-popover, .fc-unthemed >>> .fc-list-view, .fc-unthemed >>> .fc-list-heading td{

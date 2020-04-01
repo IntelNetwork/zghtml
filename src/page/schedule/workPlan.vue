@@ -89,12 +89,8 @@ export default {
             },
             options:[],
             rules:{
-
             },
-            calendarEvents:[
-
-            ]
-
+            calendarEvents:[],
         };
     },
     components: {
@@ -110,8 +106,8 @@ export default {
         
     },
     methods: {
-       handleDateClick(){
-            
+       handleDateClick(age){
+            console.log(age)
         }
 
     }

@@ -332,10 +332,10 @@ export const constantRouterMap = [
         meta: { title: '写工作计划', icon: 'el-icon-caret-right' }
     },
     {
-        path: '/demo',
-        name: 'demo',
-        component: () => import('@/page/schedule/demo'),
-        meta: { title: '写工作计划', icon: 'el-icon-caret-right' }
+        path: '/diagram',
+        name: 'diagram',
+        component: () => import('@/page/schedule/diagram'),
+        meta: { title: '日程图', icon: 'el-icon-caret-right' }
     },
     
     { path: '*', redirect: '/404', hidden: true },

@@ -65,12 +65,7 @@ export default {
             start: new Date()
         }
       ],
-      times:"",
-      // form:{
-      //     title: '测试',
-      //     start: '',
-      //     color: '#3EC7A7'
-      // },
+     
       calendarApi: null
     }
   },
